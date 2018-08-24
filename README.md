@@ -12,7 +12,8 @@ What things you need to install the software and how to install them
 
 ```
 composer
-php5.6+
+php
+nginx
 ```
 
 ### Installing
