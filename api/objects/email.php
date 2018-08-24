@@ -23,48 +23,49 @@ class Email{
         $this->recipients = $recipients ? $recipients : $this->core_conf->email_recipients;
         $this->subject = $subject;
         $this->body = $body;
+
+        // setup default mail object
+        $this->setupMail();
+    }
+
+    function setupMail() {
+        $this->mail = new PHPMailer(true);                          // Passing `true` enables exceptions
+
+        //Server settings
+        $this->mail->SMTPDebug = 2;                                 // Enable verbose debug output
+        $this->mail->isSMTP();
+        $this->mail->Host = $this->core_conf->logan_mail_server;
+        $this->mail->SMTPAuth = true;                               // Enable SMTP authentication
+        $this->mail->Username = $this->core_conf->logan_email;
+        $this->mail->Password = $this->core_conf->logan_email_password;
+        $this->mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+        $this->mail->Port = 25;                                     // TCP port to connect to
+
+        //Content
+        $this->mail->isHTML(true);                                  // Set email format to HTML
+        $this->mail->Subject = $this->subject;
+        $this->mail->Body    = $this->body;
+
+        // Recipients
+        $this->mail->setFrom($this->core_conf->logan_email, 'LOGAN');
+        $this->addRecipients($this->core_conf->email_recipients);
+    }
+
+    function addRecipients( $recipients ) {
+        $recipients_list = explode(',', $recipients);
+        foreach ($recipients_list as $recipient) {
+            $this->mail->addCC($recipient);
+        }
     }
 
     function sendMail() {
-      $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
       try {
-          //Server settings
-          $mail->SMTPDebug = 2;                                 // Enable verbose debug output
-          $mail->isSMTP();
-          $mail->Host = $this->core_conf->logan_mail_server;
-          $mail->SMTPAuth = true;                               // Enable SMTP authentication
-          $mail->Username = $this->core_conf->logan_email;
-          $mail->Password = $this->core_conf->logan_email_password;
-          $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-          $mail->Port = 25;                                     // TCP port to connect to
+        $this->mail->send();
 
-          //Recipients
-          $mail->setFrom($this->core_conf->logan_email, 'LOGAN');
-          $this->addRecipients( $mail, $this->recipients);
-
-          //Attachments
-          //$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-          //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-
-          //Content
-          $mail->isHTML(true);                                  // Set email format to HTML
-          $mail->Subject = $this->subject;
-          $mail->Body    = $this->body;
-
-          $mail->send();
-
-          // TODO - Add some logging for this bit
-          echo 'Message has been sent';
+        // TODO - Add some logging for this bit
+        echo 'Message has been sent';
       } catch (Exception $e) {
-          echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+        echo 'Message could not be sent. Mailer Error: ', $this->mail->ErrorInfo;
       }
-
-    }
-
-    function addRecipients( $mail, $recipients ) {
-        $recipients_list = explode(',', $recipients);
-        foreach ($recipients_list as $recipient) {
-            $mail->addCC($recipient);
-        }
     }
 }
