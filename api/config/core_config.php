@@ -3,7 +3,7 @@ class CoreConfig{
 
     public function getConfig(){
 
-        $this->config = null;
+        $this->config = new stdClass();
 
         $fh = fopen('../shared/base_config','r');
         while ($line = fgets($fh)) {

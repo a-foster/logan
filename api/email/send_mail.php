@@ -6,26 +6,30 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-// instantiate product object
-include_once '../objects/product.php';
+include_once '../objects/email.php';
 
-$recipients = $_GET['recipients'];
+$recipients = isset($_GET['recipients']) ? $_GET['recipients'] : '';
 $subject = $_GET['subject'];
 $body = $_GET['body'];
 
-$product = new Product($db);
-
 $email = new Email($recipients, $subject, $body);
 
-if($email->sendMail()){
+$response = $email->sendMail();
+
+if ($response == 'success') {
     echo '{';
-        echo '"message": "Email sent successfully."';
+        echo '"Status": "Email sent successfully."';
+    echo '}';
+    echo '{';
+        echo '"Recipients": "' . $email->getRecipients() . '"';
+    echo '}';
+    echo '{';
+        echo '"Body": "' . $body . '"';
     echo '}';
 }
-
 else{
     echo '{';
-        echo '"message": "Unable."';
+        echo '"Status": "' . $response . '"';
     echo '}';
 }
 ?>

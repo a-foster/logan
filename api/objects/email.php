@@ -32,7 +32,6 @@ class Email{
         $this->mail = new PHPMailer(true);                          // Passing `true` enables exceptions
 
         //Server settings
-        $this->mail->SMTPDebug = 2;                                 // Enable verbose debug output
         $this->mail->isSMTP();
         $this->mail->Host = $this->core_conf->logan_mail_server;
         $this->mail->SMTPAuth = true;                               // Enable SMTP authentication
@@ -48,9 +47,10 @@ class Email{
 
         // Recipients
         $this->mail->setFrom($this->core_conf->logan_email, 'LOGAN');
-        $this->addRecipients($this->core_conf->email_recipients);
+        $this->addRecipients($this->recipients);
     }
 
+    // Add recipients to mail object
     function addRecipients( $recipients ) {
         $recipients_list = explode(',', $recipients);
         foreach ($recipients_list as $recipient) {
@@ -58,18 +58,23 @@ class Email{
         }
     }
 
+    // Return recipients from email object
+    function getRecipients () {
+        return $this->recipients;
+    }
+
     function addAttachment( $attachment ) {
-      $this->mail->addAttachment( $attachment );
+        $this->mail->addAttachment( $attachment );
     }
 
     function sendMail() {
-      try {
-        $this->mail->send();
+        try {
+            $this->mail->send();
 
-        // TODO - Add some logging for this bit
-        echo 'Message has been sent';
-      } catch (Exception $e) {
-        echo 'Message could not be sent. Mailer Error: ', $this->mail->ErrorInfo;
-      }
+            // TODO - Add some logging for this bit
+            return "success";
+        } catch (Exception $e) {
+            return $this->mail->ErrorInfo;
+        }
     }
 }
