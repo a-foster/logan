@@ -58,6 +58,10 @@ class Email{
         }
     }
 
+    function addAttachment( $attachment ) {
+      $this->mail->addAttachment( $attachment );
+    }
+
     function sendMail() {
       try {
         $this->mail->send();
