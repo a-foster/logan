@@ -1,17 +1,25 @@
 <?php
+include_once 'database.php';
 class CoreConfig{
+
+
+    public function __construct(){
+        $this->getConfig();
+    }
 
     public function getConfig(){
 
+        $db = new Database();
         $this->config = new stdClass();
 
-        $fh = fopen('../shared/base_config','r');
-        while ($line = fgets($fh)) {
-          $line = str_replace(array("\r", "\n"), '', $line);
-          $key_pair = explode("=", $line);
-          $this->config->{$key_pair[0]} = $key_pair[1];
+        $query = "SELECT * FROM config";
+        $stmt = $db->conn->prepare($query);
+        $stmt->execute();
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+            $this->config->{$row['config_key']} = $row['config_value'];
         }
-        fclose($fh);
+
         return $this->config;
     }
 }
