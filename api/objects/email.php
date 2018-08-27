@@ -20,7 +20,7 @@ class Email{
         $this->core_conf = $conf->getConfig();
 
         // anything the user would want to change is stored on the email object
-        $this->recipients = $recipients ? $recipients : $this->core_conf->email_recipients;
+        $this->recipients = $recipients ? $recipients : $this->core_conf->default_email_recipients;
         $this->subject = $subject;
         $this->body = $body;
 
@@ -33,7 +33,7 @@ class Email{
 
         //Server settings
         $this->mail->isSMTP();
-        $this->mail->Host = $this->core_conf->logan_mail_server;
+        $this->mail->Host = $this->core_conf->logan_email_server;
         $this->mail->SMTPAuth = true;                               // Enable SMTP authentication
         $this->mail->Username = $this->core_conf->logan_email;
         $this->mail->Password = $this->core_conf->logan_email_password;
