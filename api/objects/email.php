@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '../../../vendor/autoload.php';
-include_once '../config/core_config.php';
+include_once 'logan.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -14,13 +14,12 @@ class Email{
     protected $body;
 
     // constructor with $db as database connection
-    public function __construct($recipients, $subject, $body){
-        // get core config to use as defaults
-        $conf = new CoreConfig();
-        $this->core_conf = $conf->getConfig();
+    public function __construct($logan, $recipients, $subject, $body){
+        // set logan object for db, config, logging
+        $this->logan = $logan;
 
         // anything the user would want to change is stored on the email object
-        $this->recipients = $recipients ? $recipients : $this->core_conf->default_email_recipients;
+        $this->recipients = $recipients ? $recipients : $this->logan->conf->default_email_recipients;
         $this->subject = $subject;
         $this->body = $body;
 
@@ -33,10 +32,10 @@ class Email{
 
         //Server settings
         $this->mail->isSMTP();
-        $this->mail->Host = $this->core_conf->logan_email_server;
+        $this->mail->Host = $this->logan->conf->logan_email_server;
         $this->mail->SMTPAuth = true;                               // Enable SMTP authentication
-        $this->mail->Username = $this->core_conf->logan_email;
-        $this->mail->Password = $this->core_conf->logan_email_password;
+        $this->mail->Username = $this->logan->conf->logan_email;
+        $this->mail->Password = $this->logan->conf->logan_email_password;
         $this->mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
         $this->mail->Port = 25;                                     // TCP port to connect to
 
@@ -46,7 +45,7 @@ class Email{
         $this->mail->Body    = $this->body;
 
         // Recipients
-        $this->mail->setFrom($this->core_conf->logan_email, 'LOGAN');
+        $this->mail->setFrom($this->logan->conf->logan_email, 'LOGAN');
         $this->addRecipients($this->recipients);
     }
 

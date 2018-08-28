@@ -1,7 +1,8 @@
 <?php
 include_once '../objects/email.php';
+include_once '../objects/logan.php';
 
-$email = new Email('', 'Initial test email', 'TEST');
-$email->addAttachment("test.jpg");
-$email->sendMail();
+$lg = new Logan();
+$email = new Email($lg, '', 'Initial test email', 'TEST');
+echo $email->sendMail();
  ?>
