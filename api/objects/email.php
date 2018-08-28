@@ -1,29 +1,17 @@
 <?php
 require __DIR__ . '../../../vendor/autoload.php';
-include_once 'logan.php';
+include_once '../config/core_config.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 class Email{
 
-    // Common attributes for any email type
-    protected $sender;
-    protected $recipients;
-    protected $subject;
-    protected $body;
-
-    // constructor with $db as database connection
-    public function __construct($logan, $recipients, $subject, $body){
-        // set logan object for db, config, logging
-        $this->logan = $logan;
-
-        // anything the user would want to change is stored on the email object
-        $this->recipients = $recipients ? $recipients : $this->logan->conf->default_email_recipients;
-        $this->subject = $subject;
-        $this->body = $body;
+    // should be able to construct email object without arguments
+    public function __construct(){
 
         // setup default mail object
+        $this->conf = new CoreConfig();
         $this->setupMail();
     }
 
@@ -32,21 +20,18 @@ class Email{
 
         //Server settings
         $this->mail->isSMTP();
-        $this->mail->Host = $this->logan->conf->logan_email_server;
+        $this->mail->Host = $this->conf->logan_email_server;
         $this->mail->SMTPAuth = true;                               // Enable SMTP authentication
-        $this->mail->Username = $this->logan->conf->logan_email;
-        $this->mail->Password = $this->logan->conf->logan_email_password;
+        $this->mail->Username = $this->conf->logan_email;
+        $this->mail->Password = $this->conf->logan_email_password;
         $this->mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
         $this->mail->Port = 25;                                     // TCP port to connect to
 
         //Content
         $this->mail->isHTML(true);                                  // Set email format to HTML
-        $this->mail->Subject = $this->subject;
-        $this->mail->Body    = $this->body;
 
         // Recipients
-        $this->mail->setFrom($this->logan->conf->logan_email, 'LOGAN');
-        $this->addRecipients($this->recipients);
+        $this->mail->setFrom($this->conf->logan_email, 'LOGAN');
     }
 
     // Add recipients to mail object
@@ -58,15 +43,25 @@ class Email{
     }
 
     // Return recipients from email object
+    // TODO - this isn't right because recipients will be on $this->mail
     function getRecipients () {
         return $this->recipients;
     }
 
+    // supply path to file to attach
     function addAttachment( $attachment ) {
         $this->mail->addAttachment( $attachment );
     }
 
-    function sendMail() {
+    function sendMail($subject, $body) {
+
+        // use default recipients from config if none defined
+        if (!isset($this->recipients)) { $this->addRecipients($this->conf->default_email_recipients); }
+
+        // email content
+        $this->mail->Subject = $subject;
+        $this->mail->Body    = $body;
+
         try {
             $this->mail->send();
 
