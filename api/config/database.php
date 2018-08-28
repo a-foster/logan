@@ -29,5 +29,28 @@ class Database{
             echo "Connection error: " . $exception->getMessage();
         }
     }
+
+    // insert row
+    public function insert($table, $key_pairs) {
+
+        $cols = null;
+        $values = null;
+
+        foreach ($key_pairs as $col => $value) {
+            if (isset($cols)) { $cols .= ","; }
+            if (isset($values)) { $values .= ","; }
+            $cols .= $col;
+            $values .= "'" . $value . "'";
+        }
+        $query = "INSERT INTO $table ($cols) values ($values)";
+
+        // prepare and execute query
+        // TODO - Add some logging if this fails
+        $stmt = $this->conn->prepare($query);
+        if($stmt->execute()){
+            return true;
+        }
+        return false;
+    }
 }
 ?>
