@@ -22,35 +22,36 @@ class Database{
         $this->getCredentials();
         $this->conn = null;
 
-        try{
-            $this->conn = new PDO("mysql:host=" . $this->db_host . ";dbname=" . $this->db_name, $this->db_user, $this->db_password);
-            $this->conn->exec("set names utf8");
-        }catch(PDOException $exception){
-            echo "Connection error: " . $exception->getMessage();
+        $this->conn = new mysqli($this->db_host, $this->db_user, $this->db_password, $this->db_name);
+
+        // Check connection - TODO - log this somewhere
+        if ($this->conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
         }
     }
 
-    // insert row
-    public function insert($table, $key_pairs) {
+    // run a select and return result set
+    public function runQuery($query) {
 
-        $cols = null;
-        $values = null;
+      $result_set = array();
+      $result = $this->conn->query( $query );
 
-        foreach ($key_pairs as $col => $value) {
-            if (isset($cols)) { $cols .= ","; }
-            if (isset($values)) { $values .= ","; }
-            $cols .= $col;
-            $values .= "'" . $value . "'";
-        }
-        $query = "INSERT INTO $table ($cols) values ($values)";
-
-        // prepare and execute query
-        // TODO - Add some logging if this fails
-        $stmt = $this->conn->prepare($query);
-        if($stmt->execute()){
-            return true;
-        }
-        return false;
+      if ($result->num_rows > 0) {
+          // push each row to result array
+          while($row = $result->fetch_assoc()) {
+              array_push($result_set, $row);
+          }
+      }
+      return $result_set;
     }
+
+    // for inserts, deletes, updates - only return success status
+    public function runStatement($statement) {
+        $stmt = $this->conn->query($statement);
+
+        // TODO - add logging here
+        return $stmt;
+    }
+
 }
 ?>

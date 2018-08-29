@@ -24,6 +24,7 @@ $database = new Database();
 //
 // }
 
-$database->insert("logging", array("log_type" => "Test", "log_message" => "test message"));
+echo $database->runStatement("INSERT INTO logging (log_type, log_message) VALUES ('Test', 'This is a test log - v2')" );
+// $result = $database->runQuery("SELECT * FROM logging WHERE log_type='Test'" );
 
  ?>
