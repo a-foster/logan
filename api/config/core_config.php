@@ -9,11 +9,9 @@ class CoreConfig{
     public function getConfig(){
 
         $db = new Database();
-        $query = "SELECT * FROM config";
-        $stmt = $db->conn->prepare($query);
-        $stmt->execute();
+        $results = $db->runQuery("SELECT * FROM config");
 
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+        foreach ($results as $row) {
             $this->{$row['config_key']} = $row['config_value'];
         }
 
