@@ -2,7 +2,6 @@
 include_once '../config/core_config.php';
 include_once '../config/database.php';
 include_once '../config/logging.php';
-include_once 'email.php';
 
 class Logan{
 
@@ -20,7 +19,5 @@ class Logan{
         // set logging object
         $this->log = new Logging();
 
-        // email object
-        $this->email = new Email();
     }
 }
