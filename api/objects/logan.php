@@ -13,8 +13,7 @@ class Logan{
         $this->conf = $conf->getConfig();
 
         // set db connection
-        $db = new Database();
-        $this->db = $db->conn;
+        $this->db = new Database();
 
         // set logging object
         $this->log = new Logging();
