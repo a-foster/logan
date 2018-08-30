@@ -9,10 +9,21 @@ class Contact{
         $this->logan = new Logan();
     }
 
-    function addContact($email, $first_name, $surname, $phone_number, $city) {
+    function addContact($params) {
+
+        $columns = '';
+        $values = '';
+
+        // build up whatever columns/ vals the caller supplied
+        foreach ($params as $col => $val) {
+            if (!$columns) { $columns = $col; }
+            else { $columns .= ",$col"; }
+
+            if (!$values) { $values = "'$val'"; }
+            else { $values .= ",'$val'"; }
+        }
 
         // add record but return boolean success status
-        return $this->logan->db->runStatement("INSERT INTO contacts (email, first_name, surname, phone_number, city) " .
-                                              "VALUES ('$email', '$first_name', '$surname', '$phone_number', '$city')");
+        return $this->logan->db->runStatement("INSERT INTO contacts ($columns) VALUES ($values)");
     }
 }

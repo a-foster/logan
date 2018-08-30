@@ -3,5 +3,5 @@ include_once '../objects/contact.php';
 
 $contact = new Contact();
 
-echo $contact->addContact('someone@test.com', 'John', 'Doe', '0123456789', 'Johannesburg');
+echo $contact->addContact(array('email' => 'logan@test.com', 'first_name' => 'Ben', 'surname' => 'Dover', 'phone_number' => '0123456789', 'city' => 'Johannesburg', 'is_friend' => 'true'));
  ?>

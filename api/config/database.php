@@ -33,20 +33,21 @@ class Database{
     // run a select and return result set
     public function runQuery($query) {
 
-      $result_set = array();
-      $result = $this->conn->query( $query );
+        $result_set = array();
+        $result = $this->conn->query( $query );
 
-      if ($result->num_rows > 0) {
-          // push each row to result array
-          while($row = $result->fetch_assoc()) {
-              array_push($result_set, $row);
-          }
+        if ($result->num_rows > 0) {
+            // push each row to result array
+            while($row = $result->fetch_assoc()) {
+                array_push($result_set, $row);
+            }
+        }
+        return $result_set;
       }
-      return $result_set;
-    }
 
     // for inserts, deletes, updates - only return success status
     public function runStatement($statement) {
+
         $stmt = $this->conn->query($statement);
 
         // TODO - add logging here
