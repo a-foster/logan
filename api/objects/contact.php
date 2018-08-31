@@ -49,13 +49,15 @@ class Contact{
 
         $wheres = '';
 
-        foreach ($params as $col => $val) {
-            if (!$wheres) { $wheres = "$col='$val'"; }
-            else { $wheres .= "AND $col='$val'"; }
+        if ($params) {
+            foreach ($params as $col => $val) {
+                if (!$wheres) { $wheres = "WHERE $col='$val'"; }
+                else { $wheres .= "AND $col='$val'"; }
 
+            }
         }
 
         // add record but return boolean success status
-        return $this->logan->db->runQuery("SELECT * FROM contacts WHERE $wheres");
+        return $this->logan->db->runQuery("SELECT * FROM contacts $wheres");
     }
 }
