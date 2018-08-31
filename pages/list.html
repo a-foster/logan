@@ -27,12 +27,16 @@ $(document).ready(function() {
 
   // TODO - get all items and append to item table body
   // needs to build up all rows like this:
-  // <input type='submit' onclick='add_item(this)' class='barcodes' product='Coke' category='Drinks' value='Add to List'></td></tr><tr><td>1</td><td>Drinks</td><td>Red Wine</td><td>
+  // <input type='submit' onclick='add_item(this)' class='barcodes' product='Coke' category='Drinks' value='Add to List'></td></tr><tr><td>1</td><td>Drinks</td><td>Red Wine</td><td>"""""
+  // NOTE - This also needs to add a tick if item_added=Y
+
   $.ajax({
     url: base_endpoint + 'shopping/get_items.php',
     type: 'GET',
-    data: { request_type: 'add_item', product: $(btn).attr('product'), category: $(btn).attr('category') },
-    success: function(result) {
+    data: { },
+    success: function(results) {
+
+      $("<input type='submit' onclick='add_item(this)' class='barcodes' product='Coke' category='Drinks' value='Add to List'></td></tr><tr><td>1</td><td>Drinks</td><td>Red Wine</td><td>").appendTo($('#barcodes'));
       $(btn).val('Remove');
       $("<span id='" + product_id + "_tick' class='item_sent glyphicon glyphicon-ok' style='color:green; margin-left: 3px;'></span>").insertAfter(this_button);
     }
