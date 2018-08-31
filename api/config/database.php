@@ -50,8 +50,12 @@ class Database{
 
         $stmt = $this->conn->query($statement);
 
-        // TODO - add logging here
-        return $stmt;
+        if ($stmt === TRUE) { return 'success'; }
+        else {
+            $sql_err = str_replace("'", "", $this->conn->error);
+            $this->runStatement("INSERT INTO logging (log_type, log_message) VALUES ('MySQL', '$sql_err')");
+            return $this->conn->error;
+        }
     }
 
 }
