@@ -83,9 +83,9 @@ var add_item = function(btn) {
 	}
 }
 
-// TODO - refactor the following functions to use new base_endpoint
-// will also need some logic to mark stuff as 'added' and work out who to send emails to
 var create_list = function() {
+  // TODO - refactor the following functions to use new base_endpoint
+  // will also need some logic to mark stuff as 'added' and work out who to send emails to
   $.ajax({
 	  url: base_endpoint + 'shopping/create_list.php',
 	  type: 'GET',
@@ -97,13 +97,12 @@ var create_list = function() {
 			$('.barcodes').val('Add to List');
       $("<span class='item_sent glyphicon glyphicon-ok' style='color:green; margin-left: 3px;'></span>").insertAfter($('#create_list'));
 
-      // TODO - This needs to update all items as not added, maybe 'remove_all_items.php', then could use that for the reset too
       $.ajax({
         url: base_endpoint + 'shopping/remove_all_items.php',
         type: 'GET',
         data: { request_type: 'refresh' },
 				success: function(result) {
-					// make sure page is refreshed, live.js can be a bit hit and miss
+					// make sure page is refreshed to get latest frequencies
 					location.reload();
 				}
       });
@@ -127,15 +126,15 @@ var view_list = function() {
 
 var reset_list = function() {
   $.ajax({
-	  url: 'ajax_request.php',
-	  type: 'GET',
-	  data: { request_type: 'reset_list' },
-	  success: function(result) {
+    url: base_endpoint + 'shopping/remove_all_items.php',
+    type: 'GET',
+    data: { request_type: 'refresh' },
+    success: function(result) {
+      // make sure page is refreshed to get latest frequencies
       location.reload();
-	  }
-	});
+    }
+  });
 }
-
 </script>
 </head>
 <body>
