@@ -59,9 +59,9 @@ var add_item = function(btn) {
 	var product_id = $(btn).attr('product').replace(/\W/g, '');
 	if ($(btn).val() == 'Add to List') {
 		$.ajax({
-		  url: 'ajax_request.php',
+		  url: base_endpoint + 'shopping/add_to_list.php',
 		  type: 'GET',
-		  data: { request_type: 'add_item', product: $(btn).attr('product'), category: $(btn).attr('category') },
+		  data: { item_name: $(btn).attr('product') },
 		  success: function(result) {
 				$(btn).val('Remove');
 			  $("<span id='" + product_id + "_tick' class='item_sent glyphicon glyphicon-ok' style='color:green; margin-left: 3px;'></span>").insertAfter(this_button);
@@ -71,14 +71,14 @@ var add_item = function(btn) {
 
 	// else we must want to remove item
 	else {
-		$.ajax({
-			url: 'ajax_request.php',
-			type: 'GET',
-			data: { request_type: 'remove_item', product: $(btn).attr('product'), category: $(btn).attr('category') },
-			success: function(result) {
-				$('#' + product_id + '_tick').remove();
+    $.ajax({
+		  url: base_endpoint + 'shopping/remove_from_list.php',
+		  type: 'GET',
+		  data: { item_name: $(btn).attr('product') },
+		  success: function(result) {
+        $('#' + product_id + '_tick').remove();
 				$(btn).val('Add to List');
-			}
+		  }
 		});
 	}
 }
