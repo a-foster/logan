@@ -4,6 +4,7 @@
   <title>SLIM</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <link rel='stylesheet' type='text/css' href='src/DataTables/datatables.min.css'/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script type='text/javascript' src='src/DataTables/datatables.min.js'></script>
   <script type='text/javascript' src='src/DataTables/jquery.onScreenKeyboard.js'></script>
   <link rel='stylesheet' type='text/css' href='src/DataTables/onScreenKeyboard.css'/>
@@ -48,7 +49,7 @@ $(document).ready(function() {
          // add the row to the table
          $('#barcodes').DataTable().row.add([
            this_item['item_frequency'], this_item['item_category'], this_item['item_name'], "<input type='submit' onclick='add_item(this)' class='barcodes' product='" +
-           this_item['item_name']+ "' category='" + this_item['item_category'] + "' value='" + btn_val + "'></td></tr><tr><td>" + item_added_tick
+           this_item['item_name'] + "' category='" + this_item['item_category'] + "' value='" + btn_val + "'></td></tr><tr><td>" + item_added_tick
          ]).draw();
       }
     }
@@ -88,6 +89,7 @@ var add_item = function(btn) {
 }
 
 var create_list = function() {
+  $('.loading').show();
   $.ajax({
 	  url: base_endpoint + 'shopping/create_list.php',
 	  type: 'GET',
@@ -104,26 +106,39 @@ var create_list = function() {
         type: 'GET',
         data: { request_type: 'refresh' },
 				success: function(result) {
-					// make sure page is refreshed to get latest frequencies
+          $('.loading').hide();
+
+          // make sure page is refreshed to get latest frequencies
 					location.reload();
 				}
       });
 	  }
 	});
 }
-// TODO - Need a create_item endpoint and then add the row (like we do at the start) and mark with a tick
-// NOTE - This is the 'new_product' function which previously used a new page, but I want it to be a modal really.
 
-// TODO - this will need to open a modal or something with the current list build up and returned on the fly, might be difficult but cool!
+var new_item = function(btn) {
+  $.ajax({
+    url: base_endpoint + 'shopping/create_item.php',
+    type: 'GET',
+    data: { item_name: $('#name').val(), item_category: $('#category').val(), item_frequency: $('#frequency').val() },
+    success: function(result) {
+        // add the item to the table and then close the modal
+        $('#barcodes').DataTable().row.add([
+          $('#frequency').val(), $('#category').val(), $('#name').val(), "<input type='submit' onclick='add_item(this)' class='barcodes' product='" +
+          $('#name').val() + "' category='" + $('#category').val() + "' value='Add to List'></td></tr><tr><td>" +
+          "<span class='item_sent glyphicon glyphicon-ok' style='color:green; margin-left: 3px;'></span>"
+        ]).draw();
+    }
+  });
+}
+
 var view_list = function() {
   $.ajax({
 	  url: base_endpoint + 'shopping/view_list.php',
 	  type: 'GET',
 	  data: { request_type: 'view_list' },
 	  success: function(result) {
-      // window.open('current_list.html');
-      console.log(result);
-      $('.list-modal-body').replaceWith(result);
+      $('.list-modal-body').html(result);
 	  }
 	});
 }
@@ -142,7 +157,7 @@ var reset_list = function() {
 </script>
 </head>
 <body>
-
+<div class="loading">Loading&#8230;</div>
 <p id='notice'></p>
 
 <style>
@@ -153,9 +168,131 @@ var reset_list = function() {
     margin-left: 15px;
 		font-size: 20px;
 }
+
+/* ///////// LOADS of css for the spinner icon when creating list ////////// */
+/* Absolute Center Spinner */
+.loading {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Transparent Overlay */
+.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+}
+
+/* :not(:required) hides these rules from IE9 and below */
+.loading:not(:required) {
+  /* hide "loading..." text */
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.loading:not(:required):after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  margin-top: -0.5em;
+  -webkit-animation: spinner 1500ms infinite linear;
+  -moz-animation: spinner 1500ms infinite linear;
+  -ms-animation: spinner 1500ms infinite linear;
+  -o-animation: spinner 1500ms infinite linear;
+  animation: spinner 1500ms infinite linear;
+  border-radius: 0.5em;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+  box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+}
+
+/* Animation */
+
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 </style>
 
-<!-- Modal -->
+<!-- Current List Modal -->
 <div class="modal fade listModalTrigger" id="listModal" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -163,10 +300,56 @@ var reset_list = function() {
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Current List</h4>
       </div>
-      <div class="list-modal-body">
+      <div class="list-modal-body" style="padding:20px;">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" style="width:100%;background-color:#ccc"><strong>Close</strong></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New Item Modal -->
+<div class="modal fade listModalTrigger" id="newItemModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button id="new_item_btn" type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">New Item</h4>
+      </div>
+      <div class="list-modal-body" style="padding:20px">
+        <div class="form-group">
+          <label for="name">Product Name:</label>
+          <input type="text" class="form-control" id="name">
+        </div>
+        <div class="form-group">
+          <label for="category">Product Category:</label>
+          <select class="form-control" id="category">
+            <option>Cereals/ Dried Food</option>
+            <option>Condiments</option>
+            <option>Dairy</option>
+            <option>Drinks</option>
+            <option>Frozen</option>
+            <option>Fruit & Veg</option>
+            <option>Household</option>
+            <option>Ingredients</option>
+            <option>Sweets & Chucklit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="frequency">Purchase Frequency (1-5):</label>
+          <select class="form-control" id="frequency">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p style="float:left;"><strong>Note - new items are automatically added to the list</strong></p>
+        <button type="button" onclick="new_item()" class="btn btn-default" data-dismiss="modal" style="background-color:green; color:white;">Add Item</button>
       </div>
     </div>
   </div>
@@ -178,16 +361,16 @@ var reset_list = function() {
   <thead>
   	<tr>
       <td>
-        <input type='submit' id="create_list" onclick="create_list()" value="Create List" style="background-color:green; color:white;">
+        <input type='submit' id="create_list" onclick="create_list()" class="btn btn-info btn-lg" value="Create List" style="background-color:green; color:white;">
       </td>
       <td>
         <input type='submit' id="view_list" onclick="view_list()" class="btn btn-info btn-lg" data-toggle="modal" data-target="#listModal" value="View List" style="background-color:blue; color:white;">
       </td>
 			<td>
-				<input type='submit' id="reset_list" onclick="reset_list()" value="Reset List" style="background-color:red; color:white;">
+				<input type='submit' id="reset_list" onclick="reset_list()" class="btn btn-info btn-lg" value="Reset List" style="background-color:red; color:white;">
 			</td>
 			<td>
-				<input type='submit' id="add_product" onclick="window.open('new_item.html')" value="New Product" style="background-color:blue; color:white;">
+        <input type='submit' id="add_product" class="btn btn-info btn-lg" data-toggle="modal" data-target="#newItemModal" value="New Product" style="background-color:blue; color:white;">
 			</td>
     </tr>
     <tr>

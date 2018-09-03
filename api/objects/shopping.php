@@ -13,7 +13,7 @@ class Shopping{
 
         // add record but return success status
         return $this->logan->db->runStatement("INSERT INTO shopping_list (item_name, item_category, item_frequency, item_added)
-                                              VALUES ($name, $category, $frequency, 'Y')");
+                                              VALUES ('$name', '$category', '$frequency', 1)");
     }
 
     // Can only update item by name as it's unique
