@@ -41,6 +41,7 @@ $contacts = $contact->getContacts(array('is_home' => '1'));
 foreach ($contacts as $contact) {
     $email->addRecipients($contact['email']);
 }
+
 // send mail and return success status
-return json_encode($email->sendMail("Shopping List", $html_string));
+echo json_encode($email->sendMail("Shopping List", $html_string));
 ?>

@@ -35,16 +35,18 @@ $(document).ready(function() {
       for(var item in items) {
          this_item = items[item];
          item_added_tick = '';
+         btn_val = 'Add to List';
 
          // if the item has been added to list, make sure we mark it with a tick
-         if (this_item['item_added']) {
+         if (this_item['item_added'] == 1) {
            item_added_tick = "<span class='item_sent glyphicon glyphicon-ok' style='color:green; margin-left: 3px;'></span>";
+           btn_val = 'Remove';
          }
 
          // add the row to the table
          $('#barcodes').DataTable().row.add([
            this_item['item_frequency'], this_item['item_category'], this_item['item_name'], "<input type='submit' onclick='add_item(this)' class='barcodes' product='" +
-           this_item['item_name']+ "' category='" + this_item['item_category'] + "' value='Add to List'></td></tr><tr><td>" + item_added_tick
+           this_item['item_name']+ "' category='" + this_item['item_category'] + "' value='" + btn_val + "'></td></tr><tr><td>" + item_added_tick
          ]).draw();
       }
     }
@@ -84,8 +86,6 @@ var add_item = function(btn) {
 }
 
 var create_list = function() {
-  // TODO - refactor the following functions to use new base_endpoint
-  // will also need some logic to mark stuff as 'added' and work out who to send emails to
   $.ajax({
 	  url: base_endpoint + 'shopping/create_list.php',
 	  type: 'GET',
