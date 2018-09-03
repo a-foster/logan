@@ -2,6 +2,6 @@
 include_once '../objects/email.php';
 
 $email = new Email();
-$email->addRecipients('someone@test.com');
+$email->addRecipients('teat@test.co.uk');
 echo $email->sendMail("Test", "Test email");
  ?>

@@ -45,15 +45,10 @@ class Contact{
             $this->logan->log->writeLog("Contact Update", "Updated $email with " . str_replace("'", "", $changes));
             return $status;
         }
-
-        // TODO - Not sure we even return this far so need to look at that and how we handle it
-        else {
-            $this->logan->log->writeLog("Contact Update Fail", "Attempted $statement, but got $status");
-            return $status;
-        }
     }
 
     function deleteContact($email) {
+        $this->logan->log->writeLog("Contact Delete", "Deleted $email");
         return $this->logan->db->runStatement("DELETE FROM contacts WHERE email='$email'");
     }
 

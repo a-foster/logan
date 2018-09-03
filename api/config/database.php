@@ -43,7 +43,7 @@ class Database{
             }
         }
         return $result_set;
-      }
+    }
 
     // for inserts, deletes, updates - only return success status
     public function runStatement($statement) {
@@ -52,11 +52,11 @@ class Database{
 
         if ($stmt === TRUE) { return 'success'; }
         else {
+            // log the error and return null so frontend knows it was a fail
             $sql_err = str_replace("'", "", $this->conn->error);
-            $this->runStatement("INSERT INTO logging (log_type, log_message) VALUES ('MySQL', '$sql_err')");
-            return $this->conn->error;
+            $statement = str_replace("'", "", $statement);
+            $this->runStatement("INSERT INTO logging (log_type, log_message) VALUES ('MySQL', 'Attempted to run: $statement - Error: $sql_err')");
         }
     }
-
 }
 ?>
