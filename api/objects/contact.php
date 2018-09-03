@@ -38,7 +38,19 @@ class Contact{
 
         }
 
-        return $this->logan->db->runStatement("UPDATE contacts SET $changes WHERE email='$email'");
+        $statement = "UPDATE contacts SET $changes WHERE email='$email'";
+        $status = $this->logan->db->runStatement($statement);
+
+        if ($status == 'success') {
+            $this->logan->log->writeLog("Contact Update", "Updated $email with " . str_replace("'", "", $changes));
+            return $status;
+        }
+
+        // TODO - Not sure we even return this far so need to look at that and how we handle it
+        else {
+            $this->logan->log->writeLog("Contact Update Fail", "Attempted $statement, but got $status");
+            return $status;
+        }
     }
 
     function deleteContact($email) {

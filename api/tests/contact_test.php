@@ -5,5 +5,5 @@ $contact = new Contact();
 
 // echo $contact->addContact(array('email' => 'logan@test.com', 'first_name' => 'Ben', 'surname' => 'Dover', 'phone_number' => '0123456789', 'city' => 'Johannesburg', 'is_friend' => 'true'));
 
-echo var_dump($contact->getContacts(''));
+echo $contact->updateContact('logan@test.com', array('is_colleague' => '1', 'is_test' => '1'));
  ?>

@@ -65,7 +65,7 @@ class Email{
 
         try {
             $this->mail->send();
-            $this->logan->db->logging->writeLog("Email", "Sent mail to: $this->recipients - Subject: $subject");
+            $this->logan->log->writeLog("Email", "Sent mail to: $this->recipients - Subject: $subject");
             return "success";
         } catch (Exception $e) {
             return $this->mail->ErrorInfo;
