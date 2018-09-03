@@ -32,6 +32,7 @@ class Email{
 
         // Recipients
         $this->mail->setFrom($this->logan->conf->logan_email, 'LOGAN');
+        $this->recipients = '';
     }
 
     // Add recipients to mail object
@@ -40,10 +41,10 @@ class Email{
         foreach ($recipients_list as $recipient) {
             $this->mail->addCC($recipient);
         }
+        $this->recipients .= $recipients . ',';
     }
 
     // Return recipients from email object
-    // TODO - this isn't right because recipients will be on $this->mail
     function getRecipients () {
         return $this->recipients;
     }
@@ -64,8 +65,7 @@ class Email{
 
         try {
             $this->mail->send();
-
-            // TODO - Add some logging for this bit
+            $this->logan->db->logging->writeLog("Email", "Sent mail to: $this->recipients - Subject: $subject");
             return "success";
         } catch (Exception $e) {
             return $this->mail->ErrorInfo;

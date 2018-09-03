@@ -8,7 +8,7 @@ class Logging{
     }
 
     public function writeLog($type, $message){
-      return $this->db->insert($this->table_name, array( "log_type" => $type, "log_message" => $message));
+      return $this->db->runStatement("INSERT INTO logging (log_type, log_message) VALUES ('$type', '$message')");
     }
 }
 ?>
