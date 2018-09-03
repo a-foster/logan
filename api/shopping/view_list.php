@@ -23,13 +23,12 @@ foreach ($items as $item) {
 // build up the html list by category
 $html_string = '';
 foreach ($items_by_category as $category => $category_items) {
-    $html_string .= "<html><body><h3><strong>$category</strong></h3>";
+    $html_string .= "<html><body><h4><strong>$category</strong></h4><ul>";
 
     foreach ($category_items as $item_name => $item_frequency) {
-        $html_string .= "<p><input type='checkbox'>$item_name</p>";
+        $html_string .= "<li>$item_name</li>";
     }
-    $html_string .= "<br>";
-    $html_string .= "</body></html>";
+    $html_string .= "</ul><br></body></html>";
 }
 
 echo json_encode($html_string);

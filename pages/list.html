@@ -2,11 +2,13 @@
 <html>
 <head>
   <title>SLIM</title>
-  <script type='text/javascript' src='src/DataTables/jQuery-2.2.4/jquery-2.2.4.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <link rel='stylesheet' type='text/css' href='src/DataTables/datatables.min.css'/>
   <script type='text/javascript' src='src/DataTables/datatables.min.js'></script>
   <script type='text/javascript' src='src/DataTables/jquery.onScreenKeyboard.js'></script>
   <link rel='stylesheet' type='text/css' href='src/DataTables/onScreenKeyboard.css'/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 
 <script>
 var base_endpoint = '../api/';
@@ -121,7 +123,7 @@ var view_list = function() {
 	  success: function(result) {
       // window.open('current_list.html');
       console.log(result);
-      $('.list-modal-body').append(result);
+      $('.list-modal-body').replaceWith(result);
 	  }
 	});
 }
@@ -145,7 +147,6 @@ var reset_list = function() {
 
 <style>
 #stuff {
-
     margin-top: 10px;
     margin-bottom: 100px;
     margin-right: 15px;
@@ -155,7 +156,7 @@ var reset_list = function() {
 </style>
 
 <!-- Modal -->
-<div class="modal fade listModalTrigger" id="list_modal" role="dialog">
+<div class="modal fade listModalTrigger" id="listModal" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -180,7 +181,7 @@ var reset_list = function() {
         <input type='submit' id="create_list" onclick="create_list()" value="Create List" style="background-color:green; color:white;">
       </td>
       <td>
-        <input type='submit' id="view_list" onclick="view_list()" class="btn btn-info btn-lg" data-toggle="modal" data-target="#list-modal" value="View List" style="background-color:blue; color:white;">
+        <input type='submit' id="view_list" onclick="view_list()" class="btn btn-info btn-lg" data-toggle="modal" data-target="#listModal" value="View List" style="background-color:blue; color:white;">
       </td>
 			<td>
 				<input type='submit' id="reset_list" onclick="reset_list()" value="Reset List" style="background-color:red; color:white;">
