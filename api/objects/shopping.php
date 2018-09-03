@@ -19,7 +19,10 @@ class Shopping{
     // Can only update item by name as it's unique
     function updateItem($name, $params) {
 
+        $wheres = '';
         $changes = '';
+
+        if ($name != '*') { $wheres = "WHERE item_name='$name'"; }
 
         foreach ($params as $col => $val) {
             if (!$changes) { $changes = "$col='$val'"; }
@@ -27,7 +30,7 @@ class Shopping{
 
         }
 
-        return $this->logan->db->runStatement("UPDATE shopping_list SET $changes WHERE item_name='$name'");
+        return $this->logan->db->runStatement("UPDATE shopping_list SET $changes $wheres");
     }
 
     function deleteItem($name) {

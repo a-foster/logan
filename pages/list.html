@@ -51,12 +51,12 @@ $(document).ready(function() {
   });
 })
 
-// TODO - refactor the following functions to use new base_endpoint
-// will also need some logic to mark stuff as 'added' and work out who to send emails to
 var add_item = function(btn) {
 	$('#list_created').remove();
 	var this_button = $(btn)[0];
 	var product_id = $(btn).attr('product').replace(/\W/g, '');
+
+  // if it's not been added, add it
 	if ($(btn).val() == 'Add to List') {
 		$.ajax({
 		  url: base_endpoint + 'shopping/add_to_list.php',
@@ -83,20 +83,23 @@ var add_item = function(btn) {
 	}
 }
 
+// TODO - refactor the following functions to use new base_endpoint
+// will also need some logic to mark stuff as 'added' and work out who to send emails to
 var create_list = function() {
   $.ajax({
-	  url: 'ajax_request.php',
+	  url: base_endpoint + 'shopping/create_list.php',
 	  type: 'GET',
-	  data: { request_type: 'create_list' },
+	  data: {},
 	  success: function(result) {
 
-      // clear all added item ticks, append message and call program to rebuild page
+      // clear all added item ticks, append message and then reset all items as item_added=0
       $('.item_sent').remove();
 			$('.barcodes').val('Add to List');
       $("<span class='item_sent glyphicon glyphicon-ok' style='color:green; margin-left: 3px;'></span>").insertAfter($('#create_list'));
 
+      // TODO - This needs to update all items as not added, maybe 'remove_all_items.php', then could use that for the reset too
       $.ajax({
-        url: 'ajax_request.php',
+        url: base_endpoint + 'shopping/remove_all_items.php',
         type: 'GET',
         data: { request_type: 'refresh' },
 				success: function(result) {
@@ -107,7 +110,10 @@ var create_list = function() {
 	  }
 	});
 }
+// TODO - Need a create_item endpoint and then add the row (like we do at the start) and mark with a tick
+// NOTE - This is the 'new_product' function which previously used a new page, but I want it to be a modal really.
 
+// TODO - this will need to open a modal or something with the current list build up and returned on the fly, might be difficult but cool!
 var view_list = function() {
   $.ajax({
 	  url: 'ajax_request.php',
@@ -133,7 +139,6 @@ var reset_list = function() {
 </script>
 </head>
 <body>
-
 
 <p id='notice'></p>
 
@@ -173,7 +178,6 @@ var reset_list = function() {
 	  	<th>Add/ Remove Items</th>
     </tr>
   </thead>
-
   <tbody>
   </tbody>
 </table>
