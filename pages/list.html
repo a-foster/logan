@@ -138,7 +138,7 @@ var view_list = function() {
 	  type: 'GET',
 	  data: { request_type: 'view_list' },
 	  success: function(result) {
-      $('.list-modal-body').html(result);
+      $('#current-list-body').html(result);
 	  }
 	});
 }
@@ -300,7 +300,7 @@ var reset_list = function() {
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Current List</h4>
       </div>
-      <div class="list-modal-body" style="padding:20px;">
+      <div id="current-list-body" class="list-modal-body" style="padding:20px;">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" style="width:100%;background-color:#ccc"><strong>Close</strong></button>
