@@ -31,7 +31,7 @@ class Email{
         $this->mail->isHTML(true);                                  // Set email format to HTML
 
         // Recipients
-        $this->mail->setFrom($this->logan->conf->logan_email, 'LOGAN');
+        $this->mail->setFrom($this->logan->conf->logan_email_sender, 'LOGAN');
         $this->recipients = '';
     }
 
