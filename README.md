@@ -13,6 +13,8 @@ What things you need to install the software and how to install them
 ```
 composer
 php
+php-fpm
+php-mysql
 nginx
 ```
 
@@ -22,6 +24,19 @@ After cloning the repo, just do this:
 
 ```
 php /usr/bin/composer install
+```
+
+You'll need to ensure you configure nginx to allow php processing:
+
+```
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
 ```
 
 ## Built With
