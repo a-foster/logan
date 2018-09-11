@@ -12,9 +12,9 @@ $recipients = isset($_GET['recipients']) ? $_GET['recipients'] : '';
 $subject = $_GET['subject'];
 $body = $_GET['body'];
 
-$email = new Email($recipients, $subject, $body);
-
-$response = $email->sendMail();
+$email = new Email();
+$email->addRecipients($recipients);
+$response = $email->sendMail($subject, $body);
 
 if ($response == 'success') {
     echo '{';
