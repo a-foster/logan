@@ -2,15 +2,13 @@
 <html>
 <head>
   <title>SLIM</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="src/DataTables/jQuery-2.2.4/jquery-2.2.4.min.js"></script>
   <link rel='stylesheet' type='text/css' href='src/DataTables/datatables.min.css'/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script type='text/javascript' src='src/DataTables/datatables.min.js'></script>
   <script type='text/javascript' src='src/DataTables/jquery.onScreenKeyboard.js'></script>
   <link rel='stylesheet' type='text/css' href='src/DataTables/onScreenKeyboard.css'/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-
 <script>
 var base_endpoint = '../api/';
 
@@ -138,7 +136,7 @@ var view_list = function() {
 	  type: 'GET',
 	  data: { request_type: 'view_list' },
 	  success: function(result) {
-      $('.list-modal-body').html(result);
+      $('#current-list-body').html(result);
 	  }
 	});
 }
@@ -300,7 +298,7 @@ var reset_list = function() {
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Current List</h4>
       </div>
-      <div class="list-modal-body" style="padding:20px;">
+      <div id="current-list-body" class="list-modal-body" style="padding:20px;">
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" style="width:100%;background-color:#ccc"><strong>Close</strong></button>

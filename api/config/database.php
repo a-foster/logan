@@ -7,7 +7,8 @@ class Database{
 
     // get db credentials from base_config file
     private function getCredentials() {
-        $fh = fopen('../shared/db_config','r');
+        $db_config = file_exists('../shared/db_config') ? '../shared/db_config' : '/home/logan/db_config';
+        $fh = fopen($db_config,'r');
         while ($line = fgets($fh)) {
           $line = str_replace(array("\r", "\n"), '', $line);
           $key_pair = explode("=", $line);
