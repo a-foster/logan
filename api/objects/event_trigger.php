@@ -48,6 +48,9 @@ class EventTrigger{
             // update most recent trigger to 'triggered'
             $this->updateTrigger($trigger_type, 1, $most_recent_trigger[0]['id']);
 
+            // log the event trigger
+            $this->logan->log->writeLog("Event", "Triggered event $trigger_type at $curr_time");
+
             return "true";
         }
     }

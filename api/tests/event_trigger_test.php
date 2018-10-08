@@ -7,7 +7,7 @@ $trigger = new EventTrigger();
 //
 // echo var_dump($trigger->getTriggers('weather_forecast'));
 //
-$trigger->updateTrigger('weather_forecast', '1', '');
+// $trigger->updateTrigger('weather_forecast', '0', '');
 // echo var_dump($trigger->getTriggers('weather_forecast'));
 
 echo $trigger->shouldTrigger('weather_forecast');
