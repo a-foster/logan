@@ -37,7 +37,7 @@ class Database{
         $result_set = array();
         $result = $this->conn->query( $query );
 
-        if ($result->num_rows > 0) {
+        if ($result && $result->num_rows > 0) {
             // push each row to result array
             while($row = $result->fetch_assoc()) {
                 array_push($result_set, $row);
