@@ -11,6 +11,7 @@ include_once '../objects/event_trigger.php';
 $hardware_trigger = new EventTrigger();
 
 $trigger_type = $_GET['trigger_type'];
+$trigger_time = $_GET['trigger_time'];
 
-echo json_encode($hardware_trigger->shouldTrigger($trigger_type));
+echo json_encode($hardware_trigger->addTrigger($trigger_type, $trigger_time));
 ?>
