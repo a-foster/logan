@@ -5,7 +5,6 @@ class Contact{
 
     public function __construct(){
 
-        // setup default mail object
         $this->logan = new Logan();
     }
 
