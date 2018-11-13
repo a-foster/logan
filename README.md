@@ -39,6 +39,23 @@ You'll need to ensure you configure nginx to allow php processing:
     }
 ```
 
+### Database Setup
+
+After install the DB schema (TODO), the following options must be included in the `config` table:
+
+```
++--------------------------+--------------------------------------+
+| config_key               | config_value                         |
++--------------------------+--------------------------------------+
+| logan_email              | [smtp_username]                      |
+| logan_email_password     | [smtp_password]                      |
+| logan_email_server       | [smtp_server]                        |
+| default_email_recipients | [comma_delimited_list_of_recipients] |
+| logan_email_sender       | [smtp_sender]                        |
+| default_city             | [default_city]                       |
++--------------------------+--------------------------------------+
+```
+
 ## Built With
 
 * [Composer](https://getcomposer.org/) - Dependency Manager for PHP
