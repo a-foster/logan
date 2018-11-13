@@ -39,7 +39,7 @@ class Email{
     function addRecipients( $recipients ) {
         $recipients_list = explode(',', $recipients);
         foreach ($recipients_list as $recipient) {
-            $this->mail->addCC($recipient);
+            $this->mail->addAddress($recipient);
         }
         $this->recipients .= $recipients . ',';
     }
@@ -68,6 +68,7 @@ class Email{
             $this->logan->log->writeLog("Email", "Sent mail to: $this->recipients - Subject: $subject");
             return "success";
         } catch (Exception $e) {
+            $this->logan->log->writeLog("Email Error", "Failed sending mail to: $this->recipients - Subject: $subject");
             return $this->mail->ErrorInfo;
         }
     }
