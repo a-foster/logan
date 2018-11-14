@@ -36,6 +36,7 @@ $(document).ready(function() {
       for(var item in items) {
          this_item = items[item];
          item_added_tick = '';
+         product_id = this_item['item_name'].replace(/\W/g, '');
          btn_val = 'Add to List';
 
          // if the item has been added to list, make sure we mark it with a tick
@@ -46,8 +47,11 @@ $(document).ready(function() {
 
          // add the row to the table
          $('#barcodes').DataTable().row.add([
-           this_item['item_frequency'], this_item['item_category'], this_item['item_name'], "<input type='submit' onclick='add_item(this)' class='barcodes' product='" +
-           this_item['item_name'] + "' category='" + this_item['item_category'] + "' value='" + btn_val + "'></td></tr><tr><td>" + item_added_tick
+           this_item['item_frequency'], "<div id='category_for_" + product_id + "'>" + this_item['item_category'] + "</div>" , this_item['item_name'], "<input type='submit' onclick='add_item(this)' class='barcodes' product='" +
+           this_item['item_name'] + "' category='" + this_item['item_category'] + "' value='" + btn_val + "'></td></tr><tr><td>" + item_added_tick +
+           "<input type='submit' id='change_category' product='" + this_item['item_name'] +
+           "' style='float:right;' class='btn btn-info btn-lg' data-toggle='modal' data-target='#changeCategoryModal' " +
+           "onclick=set_item_change_category('" + this_item['item_name'] + "')   value='Change Category' style='background-color:blue; color:white;''>"
          ]).draw();
       }
     }
@@ -126,6 +130,25 @@ var new_item = function(btn) {
           $('#name').val() + "' category='" + $('#category').val() + "' value='Add to List'></td></tr><tr><td>" +
           "<span class='item_sent glyphicon glyphicon-ok' style='color:green; margin-left: 3px;'></span>"
         ]).draw();
+    }
+  });
+}
+
+var set_item_change_category = function(item) {
+  $('#item_change_category').text(item);
+}
+
+var change_category = function(btn) {
+  item_name = $('#item_change_category').text();
+  product_id = item_name.replace(/\W/g, '');
+  new_category = $('#new_category').val();
+  $.ajax({
+    url: base_endpoint + 'shopping/change_category.php',
+    type: 'GET',
+    data: { item_name: item_name, new_category: new_category },
+    success: function(result) {
+        // once category has been updated in db. change it live on the page
+        $('#category_for_' + product_id).text(new_category);
     }
   });
 }
@@ -323,14 +346,15 @@ var reset_list = function() {
         <div class="form-group">
           <label for="category">Product Category:</label>
           <select class="form-control" id="category">
-            <option>Cereals/ Dried Food</option>
-            <option>Condiments</option>
+            <option>Cereals & Bread</option>
+            <option>Condiments/ Sauces/ Oils</option>
+            <option>Pasta & Rice/ Dried Food</option>
+            <option>Baking</option>
             <option>Dairy</option>
             <option>Drinks</option>
             <option>Frozen</option>
             <option>Fruit & Veg</option>
             <option>Household</option>
-            <option>Ingredients</option>
             <option>Sweets & Chucklit</option>
           </select>
         </div>
@@ -348,6 +372,38 @@ var reset_list = function() {
       <div class="modal-footer">
         <p style="float:left;"><strong>Note - new items are automatically added to the list</strong></p>
         <button type="button" onclick="new_item()" class="btn btn-default" data-dismiss="modal" style="background-color:green; color:white;">Add Item</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Change Category Modal -->
+<div class="modal fade listModalTrigger" id="changeCategoryModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button id="change_category_btn" type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Change category for: <p id='item_change_category'></p></h4>
+      </div>
+      <div class="list-modal-body" style="padding:20px">
+        <div class="form-group">
+          <label for="category">New Category:</label>
+          <select class="form-control" id="new_category">
+            <option>Cereals & Bread</option>
+            <option>Condiments/ Sauces/ Oils</option>
+            <option>Pasta & Rice/ Dried Food</option>
+            <option>Baking</option>
+            <option>Dairy</option>
+            <option>Drinks</option>
+            <option>Frozen</option>
+            <option>Fruit & Veg</option>
+            <option>Household</option>
+            <option>Sweets & Chucklit</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" onclick="change_category()" class="btn btn-default" data-dismiss="modal" style="background-color:green; color:white;">Submit</button>
       </div>
     </div>
   </div>
