@@ -56,6 +56,7 @@ class Database{
             // log the error and return null so frontend knows it was a fail
             $sql_err = str_replace("'", "", $this->conn->error);
             $statement = str_replace("'", "", $statement);
+            $statement = substr($statement, 0, 254);
             $this->runStatement("INSERT INTO logging (log_type, log_message) VALUES ('MySQL', 'Attempted to run: $statement - Error: $sql_err')");
         }
     }
