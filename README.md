@@ -53,6 +53,8 @@ After install the DB schema (TODO), the following options must be included in th
 | default_email_recipients | [comma_delimited_list_of_recipients] |
 | logan_email_sender       | [smtp_sender]                        |
 | default_city             | [default_city]                       |
+| weather_api_url          | [weather_api_url]                    |
+| weather_api_key          | [weather_api_key]                    |
 +--------------------------+--------------------------------------+
 ```
 
