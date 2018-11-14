@@ -29,7 +29,11 @@ class Weather{
         if (! $weather_record || ! $weather_record['fresh_data']) {
 
             # get weather for this location from API and then store it before returning
-            $weather_json = $this->getForecastFromJSON(file_get_contents($this->weather_api_url . $location));
+            $weather_json = $this->getForecastFromJSON($location);
+
+            if (! $weather_json) {
+                return '{"cod":"404","message":"city not found"}';
+            }
 
             # if no results for this location then add it to database§
             if (! $weather_record){
@@ -60,12 +64,18 @@ class Weather{
     }
 
     # parse weather json to get just relevant info
-    function getForecastFromJSON($full_json) {
+    function getForecastFromJSON($location) {
 
         $weather_json = [];
+        $weather_api_response = @file_get_contents($this->weather_api_url . $location);
 
-        # parse the string to json and access the array of forecasts
-        $forecast_array = json_decode($full_json)->list;
+        if ( ! $weather_api_response) {
+            $this->logan->log->writeLog('Weather Error', "City not found in weather api - $location");
+            return null;
+        }
+
+        # get forecast as json
+        $forecast_array = json_decode($weather_api_response)->list;
 
         foreach($forecast_array as $forecast) {
             $weather_json[$forecast->dt_txt]['temperature'] = $forecast->main->temp;
