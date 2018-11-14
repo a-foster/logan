@@ -7,7 +7,7 @@ class Weather{
 
         // setup default logan object
         $this->logan = new Logan();
-        $this->weather_api_url = $this->logan->conf->weather_api_url . $this->logan->conf->weather_api_key . '&q=';
+        $this->weather_api_url = $this->logan->conf->weather_api_url . $this->logan->conf->weather_api_key . '&units=metric&q=';
     }
 
     # return full weather forecast for a location for next 5 days in json format
@@ -29,7 +29,7 @@ class Weather{
         if (! $weather_record || ! $weather_record['fresh_data']) {
 
             # get weather for this location from API and then store it before returning
-            $weather_json = file_get_contents($this->weather_api_url . $location);
+            $weather_json = $this->getForecastFromJSON(file_get_contents($this->weather_api_url . $location));
 
             # if no results for this location then add it to database§
             if (! $weather_record){
@@ -57,6 +57,23 @@ class Weather{
     function updateWeather($location, $weather_json) {
         return $this->logan->db->runStatement(
           "UPDATE weather SET weather_json='$weather_json', last_updated=current_timestamp() WHERE location='$location'");
+    }
+
+    # parse weather json to get just relevant info
+    function getForecastFromJSON($full_json) {
+
+        $weather_json = [];
+
+        # parse the string to json and access the array of forecasts
+        $forecast_array = json_decode($full_json)->list;
+
+        foreach($forecast_array as $forecast) {
+            $weather_json[$forecast->dt_txt]['temperature'] = $forecast->main->temp;
+            $weather_json[$forecast->dt_txt]['wind_speed'] = $forecast->wind->speed;
+            $weather_json[$forecast->dt_txt]['weather_type'] = $forecast->weather[0]->main;
+            $weather_json[$forecast->dt_txt]['weather_description'] = $forecast->weather[0]->description;
+        }
+        return json_encode($weather_json);
     }
 
 }
