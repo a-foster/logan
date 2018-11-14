@@ -23,8 +23,10 @@ class Weather{
         $weather_record = $this->logan->db->runQuery(
           "SELECT weather_json, last_updated>='$acceptable_weather_age' as fresh_data FROM weather WHERE location='$location'");
 
+        $weather_record = isset($weather_record[0]) ? $weather_record[0] : '';
+
         # if there's no entry for this location or data is out of date
-        if (! $weather_record || ! $weather_record->fresh_data) {
+        if (! $weather_record || ! $weather_record['fresh_data']) {
 
             # get weather for this location from API and then store it before returning
             $weather_json = file_get_contents($this->weather_api_url . $location);
@@ -39,7 +41,7 @@ class Weather{
             }
         }
         else {
-            $weather_json = $weather_record[0]['weather_json'];
+            $weather_json = $weather_record['weather_json'];
         }
         return $weather_json;
     }
@@ -47,14 +49,14 @@ class Weather{
     # store weather for new locations
     function storeWeather($location, $weather_json) {
         return $this->logan->db->runStatement(
-          "INSERT INTO weather (location, weather_json, updated_at)
+          "INSERT INTO weather (location, weather_json, last_updated)
           VALUES ('$location', '$weather_json', current_timestamp())");
     }
 
     # update weather for existing locations
     function updateWeather($location, $weather_json) {
         return $this->logan->db->runStatement(
-          "UPDATE weather SET weather_json=$weather_json, last_updated=current_timestamp() WHERE location='$location'");
+          "UPDATE weather SET weather_json='$weather_json', last_updated=current_timestamp() WHERE location='$location'");
     }
 
 }
